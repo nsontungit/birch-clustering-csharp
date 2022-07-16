@@ -1,0 +1,79 @@
+﻿@model BirchFormModel
+@{
+	Layout = null;
+}
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>Document</title>
+</head>
+<body>
+    <div class="alert alert-info text-center font-weight-bold" role="alert">
+        BIRCH CLUSTERING - EXAMPLE
+    </div>
+    
+    <div class="row mx-0 justify-content-center mb-5">
+        @if (ViewData["Exception"] != null)
+        {
+            <div class="col-5 text-center" id="alert-danger">
+                <span class="alert alert-danger text-center d-inline-block" role="alert">
+                    @ViewData["Exception"]
+                </span>
+            </div>
+        }
+
+        <form method="post" asp-action="Output" enctype="multipart/form-data" asp-controller="Birch" class="border rounded p-2 col-8">
+            <div class="form-row row">
+                <div class="col-6 mb-3">
+                  <input type="text" asp-for="B" class="form-control" placeholder="Branching Fator (B)">
+                  <span asp-validation-for="B" style="font-size:small" class="text-danger"></span>
+                </div>
+                <div class="col-6 mb-3">
+                  <input type="text" asp-for="T" class="form-control" placeholder="Threshold (T)">
+                  <span asp-validation-for="T" style="font-size:small" class="text-danger"></span>
+                </div>
+
+                <div class="col-6 mb-3">
+                  <input type="text" asp-for="L" class="form-control" placeholder="Number of Entries (L)">
+                  <span asp-validation-for="L" style="font-size:small" class="text-danger"></span>
+                </div>
+                <div class="col-6 mb-3">
+                  <input type="text" asp-for="K" class="form-control" placeholder="Number of Cluster (Optional)">
+                  <span asp-validation-for="K" style="font-size:small" class="text-danger"></span>
+                </div>
+            </div>
+
+          <div class="form-group small mb-3">
+            <label for="dataCollection">Hãy chọn tệp dữ liệu <b>(Chỉ nhận file .csv)</b></label>
+            <input type="file" class="form-control-file" id="dataCollection" name="DataCollection" accept=".csv" >
+            <span asp-validation-for="DataCollection" class="text-danger"></span>
+          </div>
+
+          <button class="btn btn-sm btn-info" type="submit">Tiến hành phân cụm</button>
+        </form>
+
+        <div class="my-3 mt-5 col-12 justify-content-center row mx-0">
+            <div class="col-5">
+                <img alt="clustering1" class="w-100" src="~/assets/images/hierarch.gif" />
+            </div>
+            <div class="col-3">
+                <img alt="clustering2" class="w-100" src="~/assets/images/10-what-is-clustering.gif" />
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+          $("#alert-danger").fadeTo(2000, 500).slideUp(500, function(){
+                $("#alert-danger").slideUp(500);
+          });
+        });
+    </script>
+</body>
+</html>

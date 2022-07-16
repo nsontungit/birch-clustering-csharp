@@ -1,0 +1,69 @@
+﻿@*@model BirchFormModel*@
+@{
+	Layout = null;
+}
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>Document</title>
+</head>
+<body>
+    <div class="alert alert-info text-center font-weight-bold" role="alert">
+        BIRCH CLUSTERING - EXAMPLE
+    </div>
+
+    <div class="row mx-0 justify-content-center mb-5">
+        
+        <form method="post" asp-action="Index" enctype="multipart/form-data" asp-controller="Home" class="border rounded p-2">
+          <a asp-action="Input" asp-controller="Birch" class="btn btn-sm btn-secondary">Quay lại trang trước</a>
+        </form>
+    </div>
+
+    <main class="row mx-0 justify-content-center bg-light">
+
+        <div class="col-12">
+
+        </div>
+
+        <div class="col-10">
+            <canvas id="myChart"></canvas>
+        </div>
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const data = {
+            datasets: JSON.parse('@Html.Raw(ViewData["scatter"])')
+        };
+
+        console.log(data);
+
+        const config = {
+            type: 'scatter',
+            data: data,
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom'
+                    }
+                }
+            }
+        };
+
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+
+    </script>
+</body>
+</html>
