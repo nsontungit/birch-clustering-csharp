@@ -44,6 +44,9 @@ namespace portal.Services
             {
                 var records = csv.GetRecords<Point2>().ToArray();
 
+                if (records == null || records.Length == 0)
+                    throw new NotFoundDateException("Không tìm thấy dữ liệu trong tệp");
+
                 CFTree cFTree = new CFTree();
 
                 cFTree.BranchingFactor = b;
@@ -99,17 +102,25 @@ namespace portal.Services
 
                 var scatters = new List<ScatterResult>();
 
-                foreach (var item in scatterResults)
+                try
                 {
-                    var index = scatterResults.IndexOf(item);
-                    scatters.Add(new ScatterResult()
+                    foreach (var item in scatterResults)
                     {
-                        backgroundColor = Constant.Colors[index],
-                        data = item.Children.Select(v => new { x = v.X, y = v.Y }).ToArray(),
-                        label = $"Cụm {index + 1}",
-                        pointRadius = 10
-                    });
+                        var index = scatterResults.IndexOf(item);
+                        scatters.Add(new ScatterResult()
+                        {
+                            backgroundColor = Constant.Colors[index],
+                            data = item.Children.Select(v => new { x = v.X, y = v.Y }).ToArray(),
+                            label = $"Cụm {index + 1}",
+                            pointRadius = 10
+                        });
+                    }
                 }
+                catch (IndexOutOfRangeException ex)
+                {
+                    throw new OutOfRangeColorException("Số cụm quá lớn, không đủ màu phân phối cho từng cụm");
+                }
+                
                 if (scatters.Count == 0) throw new ClusteringException("Không thể phân cụm với tham số này, hãy thử lại");
                 return scatters;
             }
