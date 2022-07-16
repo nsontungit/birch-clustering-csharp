@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CsvHelper.TypeConversion;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using portal.Models;
 using portal.Services;
@@ -34,6 +35,7 @@ namespace portal.Controllers
         {
             if (ModelState.IsValid)
             {
+                string exceptionKey = "Exception";
                 try
                 {
                     string path = _cachedDataService.ImportedFilePath = _fileUploadService.Upload(model.DataCollection);
@@ -50,17 +52,37 @@ namespace portal.Controllers
                 catch (ClusteringException ex)
                 {
                     _logger.LogWarning(ex, "Occur error while clustering");
-                    ViewData["Exception"] = $"{ex.Message}";
+                    ViewData[exceptionKey] = $"{ex.Message}";
+                }
+                catch (CsvHelper.MissingFieldException ex)
+                {
+                    _logger.LogWarning(ex, "Imported file missing field");
+                    ViewData[exceptionKey] = "Tệp đầu vào đã không đủ số lượng trường";
+                }
+                catch (NotFoundDateException ex)
+                {
+                    _logger.LogWarning(ex, "Imported file not contain any records");
+                    ViewData[exceptionKey] = $"{ex.Message}";
+                }
+                catch (TypeConverterException ex)
+                {
+                    _logger.LogWarning(ex, "Config data file is incorrect or value invalid");
+                    ViewData[exceptionKey] = "Không thể chuyển đổi dữ liệu từ file csv";
                 }
                 catch (ArgumentOutOfRangeException ex)
                 {
                     _logger.LogWarning(ex, "The number of clusters is too many to represent on the graph, try again with less data");
-                    ViewData["Exception"] = $"Số cụm quá nhiều không thể biểu diễn trên biểu đồ, hãy thử lại với dữ liệu ít bản ghi hơn";
+                    ViewData[exceptionKey] = "Số cụm quá nhiều không thể biểu diễn trên biểu đồ, hãy thử lại với dữ liệu ít bản ghi hơn";
+                }
+                catch (OutOfRangeColorException ex)
+                {
+                    _logger.LogWarning(ex, "The number of colors not enough");
+                    ViewData[exceptionKey] = $"{ex.Message}";
                 }
                 catch (Exception ex)
                 {
                     _logger.LogWarning(ex, "Unknow exception");
-                    ViewData["Exception"] = $"Lỗi không xác định";
+                    ViewData[exceptionKey] = "Lỗi không xác định";
                 }
                 finally
                 {
