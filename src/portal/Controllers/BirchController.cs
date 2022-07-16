@@ -39,6 +39,10 @@ namespace portal.Controllers
                 try
                 {
                     string path = _cachedDataService.ImportedFilePath = _fileUploadService.Upload(model.DataCollection);
+                    string ext = System.IO.Path.GetExtension(path);
+                    if (ext.ToLower() != ".csv")
+                        throw new InvalidTypeFileException("Tệp không phù hợp");
+
                     if (model.B != null && model.L != null && model.T != null)
                     {
                         var result = __2dBirch.GetResult(path, model.B.Value,
@@ -52,6 +56,11 @@ namespace portal.Controllers
                 catch (ClusteringException ex)
                 {
                     _logger.LogWarning(ex, "Occur error while clustering");
+                    ViewData[exceptionKey] = $"{ex.Message}";
+                }
+                catch (InvalidTypeFileException ex)
+                {
+                    _logger.LogWarning(ex, "Imported file extension is not .csv");
                     ViewData[exceptionKey] = $"{ex.Message}";
                 }
                 catch (CsvHelper.MissingFieldException ex)
