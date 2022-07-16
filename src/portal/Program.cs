@@ -12,6 +12,7 @@ namespace portal
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<_2dBirchService>();
             builder.Services.AddScoped<FileUploadService>();
+            builder.Services.AddSingleton<CachedDataService>();
 
             var app = builder.Build();
 
