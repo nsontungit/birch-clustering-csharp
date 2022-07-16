@@ -40,6 +40,13 @@ namespace portal.Controllers
                 {
                     string path = _cachedDataService.ImportedFilePath = _fileUploadService.Upload(model.DataCollection);
                     string ext = System.IO.Path.GetExtension(path);
+                    var fi = new FileInfo(path);
+                    var fileSize = fi.Length;
+
+                    // limit 1MB
+                    if (fileSize > 1_048_576)
+                        throw new InvalidFileSizeException("Kích thước tệp vượt quá giới hạn cho phép");
+
                     if (ext.ToLower() != ".csv")
                         throw new InvalidTypeFileException("Tệp không phù hợp");
 
@@ -56,6 +63,11 @@ namespace portal.Controllers
                 catch (ClusteringException ex)
                 {
                     _logger.LogWarning(ex, "Occur error while clustering");
+                    ViewData[exceptionKey] = $"{ex.Message}";
+                }
+                catch (InvalidFileSizeException ex)
+                {
+                    _logger.LogWarning(ex, "File size exceeds the allowed limit");
                     ViewData[exceptionKey] = $"{ex.Message}";
                 }
                 catch (InvalidTypeFileException ex)

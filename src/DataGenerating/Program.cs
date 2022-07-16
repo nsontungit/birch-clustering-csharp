@@ -2,7 +2,7 @@
 using System.Text;
 
 Console.WriteLine("Hello, World!");
-//GenerateData(1000000, @"C:\Users\nsont\Downloads\portables\datn\src\data\set18.csv");
+GenerateData(30_000, @"D:\small-projects\birch-clustering-csharp\data\gt1MB\set21.csv");
 //GenerateData(30, @"C:\Users\nsont\Downloads\portables\datn\src\data\set15.csv");
 //GenerateData(30, @"C:\Users\nsont\Downloads\portables\datn\src\data\set16.csv");
 //GenerateData(30, @"C:\Users\nsont\Downloads\portables\datn\src\data\set17.csv");
